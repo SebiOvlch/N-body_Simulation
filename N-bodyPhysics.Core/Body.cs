@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace N_bodyPhysics.Core
 {
-    internal class Body
+    public class Body
     {
+        public float mass { get; set; }
+        public float radius { get; set; }
     }
 }
