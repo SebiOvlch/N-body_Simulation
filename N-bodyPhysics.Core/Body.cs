@@ -8,7 +8,13 @@ namespace N_bodyPhysics.Core
 {
     public class Body
     {
-        public float mass { get; set; }
-        public float radius { get; set; }
+        // State Variables
+        public Vector2 Position { get; set; }
+        public Vector2 Velocity { get; set; }
+        public Vector2 Acceleration {  get; set; }
+
+        // Properties
+        public float Mass { get; set; }
+        public float Radius { get; set; }
     }
 }

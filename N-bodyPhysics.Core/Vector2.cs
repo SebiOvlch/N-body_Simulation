@@ -29,35 +29,45 @@ namespace N_bodyPhysics.Core
         public static Vector2 operator +(Vector2 a, Vector2 b)
             => new Vector2(a.X + b.X, a.Y + b.Y);
         public static Vector2 operator -(Vector2 a, Vector2 b)
-            => new Vector2(a.X - b.Y, a.Y - b.Y);
+            => new Vector2(a.X - b.X, a.Y - b.Y);
         public static Vector2 operator *(Vector2 a, float scalar)
         => new Vector2(a.X * scalar, a.Y * scalar);
         public static Vector2 operator /(Vector2 a, float scalar)
-            => new Vector2(a.X / scalar, a.Y / scalar);
+        {
+            if (scalar == 0) throw new DivideByZeroException("Cannot divide a Vector2 by zero.");
+            return new Vector2(a.X / scalar, a.Y / scalar);
+        }
         #endregion
 
         #region Methods
         // Properties
-        public float Length(Vector2 V)
-        {
-            return (float)Math.Sqrt(V.X *V.X + V.Y *V.Y);
-        }
+        public float Length => (float)Math.Sqrt(X * X + Y * Y);
+       
 
-        public float LengthSquared(Vector2 V)
-        {
-            return (float)(V.X * V.X + V.Y * V.Y);
-        }
+        public float LengthSquared => (float)(X * X + Y * Y);
 
         // Geometrical methods
-        public float Dot(Vector2 a, Vector2 b)
+
+        public Vector2 Normalize()
+        {
+            float length = Length;
+            if (length == 0) return Zero;
+            return this / length;
+        }
+        public static float Dot(Vector2 a, Vector2 b)
         {
             return (float)(a.X * b.X + a.Y * b.Y);
         }
 
-        public float Distance(Vector2 a, Vector2 b)
+        public static float Distance(Vector2 a, Vector2 b)
         {
-            return Length(b - a);
+            Vector2 difference = a - b;
+            return difference.Length;
         }
+
+        public Vector2 Perpendicular() => new Vector2(-Y, X);
+
+
         #endregion
 
     }
