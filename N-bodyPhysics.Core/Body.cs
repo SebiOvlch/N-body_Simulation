@@ -9,6 +9,7 @@ namespace N_bodyPhysics.Core
 {
     public class Body
     {
+        private float min_distance_squared = 100f;
         // State Variables
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
@@ -45,8 +46,10 @@ namespace N_bodyPhysics.Core
             Body a = this;
             Vector2 r_ij_vector = b.Position - a.Position;
             float distanceSquared = r_ij_vector.LengthSquared;
-            if (distanceSquared < 1e-6)
-                return new Vector2(0, 0);
+            if (distanceSquared < min_distance_squared)
+            {
+                distanceSquared = min_distance_squared;
+            }
 
             float distance = r_ij_vector.Length;
             float ForceMagnitude = G * (a.Mass * b.Mass) / distanceSquared;

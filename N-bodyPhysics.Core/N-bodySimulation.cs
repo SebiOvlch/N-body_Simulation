@@ -9,7 +9,7 @@ namespace N_bodyPhysics.Core
     public class N_bodySimulation
     {
         private List<Body> bodies;
-        private const float Gravitational_constant = 6.674e-11f;
+        private const float Gravitational_constant = 6.674f;
 
         public N_bodySimulation()
         {
