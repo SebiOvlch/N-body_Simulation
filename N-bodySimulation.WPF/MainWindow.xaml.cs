@@ -8,9 +8,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media;
+using N_bodyPhysics.Core;
 
 namespace N_bodySimulation.WPF
 {
+    private N_bodySimulation _simulationEngine;
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
