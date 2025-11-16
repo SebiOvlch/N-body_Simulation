@@ -9,7 +9,8 @@ namespace N_bodyPhysics.Core
 {
     public class Body
     {
-        private float min_distance_squared = 100f;
+        public Vector2 PreviousPosition { get; set; }
+        private float min_distance_squared = .1f;
         // State Variables
         public Vector2 Position { get; set; }
         public Vector2 Velocity { get; set; }
@@ -21,6 +22,8 @@ namespace N_bodyPhysics.Core
 
         // For  the drawing
         public Color color { get; set; }
+        private Queue<Vector2> _trajectoryPoints;
+        private const int MAX_TRAJECTORY_POINTS = 700;
 
         #region Constructors
         public Body(Vector2 pos, Vector2 vel, float mass, float radius, Color col)
@@ -31,6 +34,9 @@ namespace N_bodyPhysics.Core
             Radius = radius;
             color = col;
             Acceleration = Vector2.Zero;
+            PreviousPosition = pos;
+            _trajectoryPoints = new Queue<Vector2>();
+
         }
         #endregion
 
@@ -54,7 +60,7 @@ namespace N_bodyPhysics.Core
             float distance = r_ij_vector.Length;
             float ForceMagnitude = G * (a.Mass * b.Mass) / distanceSquared;
 
-            Vector2 unitVector = r_ij_vector / distance;
+            Vector2 unitVector = r_ij_vector.Normalize();
             Vector2 forceVector = unitVector * ForceMagnitude;
 
             return forceVector;
@@ -64,14 +70,39 @@ namespace N_bodyPhysics.Core
         {
             if(Mass == 0) return;
 
-            Velocity += Acceleration * deltaTime;
+            Vector2 currentPosition = Position;
 
-            Position += Velocity * deltaTime;
+            Vector2 accelerationTerm = Acceleration * (deltaTime * deltaTime);
+
+            Vector2 newPosition = (Position * 2f) - PreviousPosition + accelerationTerm;
+
+            PreviousPosition = currentPosition;
+
+            Position = newPosition;
+
+            Velocity = (newPosition - PreviousPosition) / (2f * deltaTime);
+
+            Acceleration = Vector2.Zero;
         }
 
         public void ResetAcceleration()
         {
             Acceleration = Vector2.Zero;
+        }
+
+        public void AddCurrentPositionToTrajectory()
+        {
+            _trajectoryPoints.Enqueue(Position);
+
+            if (_trajectoryPoints.Count > MAX_TRAJECTORY_POINTS)
+            {
+                _trajectoryPoints.Dequeue();
+            }
+        }
+
+        public IEnumerable<Vector2> GetTrajectoryPoints()
+        {
+            return _trajectoryPoints;
         }
         #endregion
     }

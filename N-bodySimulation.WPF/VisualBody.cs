@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace N_bodySimulation.WPF
@@ -14,6 +15,7 @@ namespace N_bodySimulation.WPF
         public Body CoreBody { get; private set; }
 
         public Ellipse VisualElement { get; set; }
+        public Polyline TrajectoryElement { get; set; }
 
         public VisualBody(Body coreBody)
         {
@@ -30,6 +32,17 @@ namespace N_bodySimulation.WPF
                 Canvas.SetLeft(VisualElement, CoreBody.Position.X - CoreBody.Radius);
                 Canvas.SetTop(VisualElement, CoreBody.Position.Y - CoreBody.Radius);
             }
+            UpdateTrajectory();
+        }
+
+        private void UpdateTrajectory()
+        {
+            PointCollection points = new PointCollection();
+            foreach (var vec in CoreBody.GetTrajectoryPoints()) 
+            {
+                points.Add(new System.Windows.Point(vec.X, vec.Y)); 
+            }
+            TrajectoryElement.Points = points;
         }
     }
 }

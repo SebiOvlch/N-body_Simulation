@@ -9,11 +9,20 @@ namespace N_bodyPhysics.Core
     public class N_bodySimulation
     {
         private List<Body> bodies;
-        private const float Gravitational_constant = 6.674f;
-
-        public N_bodySimulation()
+        private bool _firstStep = true;
+        public readonly float G;
+        public N_bodySimulation(float gravitationalConstant = 1e-4f)
         {
             bodies = new List<Body>();
+            this.G = gravitationalConstant;
+        }
+
+        public List<Body> GetBodies
+        {
+            get
+            {
+                return this.bodies;
+            }
         }
 
         public void AddBody(Body body)
@@ -28,10 +37,18 @@ namespace N_bodyPhysics.Core
 
         public void Step(float fixedDeltaTime)
         {
-            foreach (var body in bodies)
-                body.Acceleration = Vector2.Zero;
 
             CalculateNetForces();
+            if (_firstStep)
+            {
+                foreach (var body in bodies)
+                {
+                    body.PreviousPosition = body.Position
+                        - body.Velocity * fixedDeltaTime
+                        + body.Acceleration * (0.5f * fixedDeltaTime * fixedDeltaTime);
+                }
+                _firstStep = false;
+            }
 
             foreach (var body in bodies)
                 body.Update(fixedDeltaTime);
@@ -46,7 +63,7 @@ namespace N_bodyPhysics.Core
                 {
                     Body bodyB = bodies[j];
 
-                    Vector2 forceVector = bodyA.calculate_force_from(bodyB, Gravitational_constant);
+                    Vector2 forceVector = bodyA.calculate_force_from(bodyB, this.G);
 
                     Vector2 AccelerationContribution_A = forceVector / bodyA.Mass;
                     bodyA.Acceleration += AccelerationContribution_A;
